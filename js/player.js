@@ -21,7 +21,6 @@ class Player {
   draw() {
     this.ctx.save();
     this.ctx.fillStyle = this.color;
-
     this.ctx.translate(this.posX + this.width / 2, this.posY + this.height / 2);
     this.ctx.rotate(-this.rads());
     this.ctx.fillRect(

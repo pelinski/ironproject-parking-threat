@@ -10,6 +10,7 @@ class Game {
     this.player = new Player(this.ctx);
     this.player.draw();
     this.update();
+    this.startLevel();
   }
 
   update() {
@@ -22,18 +23,11 @@ class Game {
       let fps = 1000 / delta;
       this.ctx.clearRect(0, 0, this.width, this.height);
 
-      /*
-
-      // Update game objects
-      gameObjects.forEach(function(object) {
-        object.update(delta);
-      });*/
       this.ctx.save();
       this.player.draw();
       this.ctx.restore();
       this.player.update(delta);
 
-      // Draw fps counter
       this.ctx.save();
       this.ctx.font = "20px Arial";
       this.ctx.fillStyle = "black";
@@ -42,6 +36,17 @@ class Game {
       window.requestAnimationFrame(draw.bind(this));
     }
     window.requestAnimationFrame(draw.bind(this));
+  }
+
+  //create array with obstacles
+
+  startLevel() {
+    let nObstacles = 8;
+    let obstaclesArray = [];
+    for (let i = 0; i < nObstacles; i++) {
+      obstaclesArray.push(new Obstacle());
+    }
+    console.log(obstaclesArray);
   }
 
   /* 
