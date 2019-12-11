@@ -21,15 +21,21 @@ class Player {
   draw() {
     this.ctx.save();
     this.ctx.fillStyle = this.color;
-    this.ctx.translate(this.posX, this.posY);
-    this.ctx.rotate(this.rads());
-    this.ctx.fillRect(this.posX, this.posY, this.width, this.height);
+
+    this.ctx.translate(this.posX + this.width / 2, this.posY + this.height / 2);
+    this.ctx.rotate(-this.rads());
+    this.ctx.fillRect(
+      -this.width / 2,
+      -this.height / 2,
+      this.width,
+      this.height
+    );
     this.ctx.restore();
   }
 
   update(delta) {
-    this.posX += Math.cos(this.rads()) * (this.speed / 1000) * delta;
-    this.posY += Math.sin(this.rads()) * (this.speed / 1000) * delta;
+    this.posX += Math.sin(this.rads()) * (this.speed / 1000) * delta;
+    this.posY += Math.cos(this.rads()) * (this.speed / 1000) * delta;
 
     /*if (this.posX > 500) {
       this.posX = -100;
@@ -42,17 +48,23 @@ class Player {
   }
 
   setListeners() {
-    document.addEventListener("keydown", e => {
-      if (e.keyCode === this.keyMap.UP) {
-        this.posY += 1;
-      } else if (e.keyCode === this.keyMap.DOWN) {
-        this.posY -= 1;
-      } else if (e.keyCode === this.keyMap.RIGHT) {
-        this.rotationDir = 1;
-      } else if (e.keyCode === this.keyMap.LEFT) {
-        this.rotationDir = -1;
+    document.addEventListener("keydown", this.eventHandler(1).bind(this));
+    document.addEventListener("keyup", this.eventHandler(0).bind(this));
+  }
+
+  eventHandler(type) {
+    return function(event) {
+      event.preventDefault(); //prevent page from scrolling
+      if (event.keyCode === this.keyMap.UP) {
+        this.speed = -100 * type;
+      } else if (event.keyCode === this.keyMap.DOWN) {
+        this.speed = +100 * type;
+      } else if (event.keyCode === this.keyMap.RIGHT) {
+        this.rotationDir = 1 * type;
+      } else if (event.keyCode === this.keyMap.LEFT) {
+        this.rotationDir = -1 * type;
       }
-    });
+    };
   }
 
   rads() {
