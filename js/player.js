@@ -6,6 +6,8 @@ class Player {
     this.color = color;
     this.posX = startPosX;
     this.posY = startPosY;
+    this.speed = 100; //px por segundo;
+    this.angle = 45;
   }
 
   draw() {
