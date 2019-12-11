@@ -10,4 +10,10 @@ class Game {
     this.player = new Player(this.ctx);
     this.player.draw();
   }
+
+  /* 
+  TODO
+  isCollision() {}
+  gameOver() {}
+  */
 }
