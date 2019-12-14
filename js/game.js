@@ -4,16 +4,15 @@ class Game {
     this.ctx = this.canvas.getContext("2d");
     this.width = this.canvas.width;
     this.height = this.canvas.height;
+    this.nObstacles = 4;
+    this.obstacles = [];
   }
 
   init() {
-    this.player = new Player(this.ctx);
-    this.player.draw();
+    this.createGameElements();
+    this.drawGameElements();
     this.update();
-    this.startLevel();
   }
-
-  //testabranch
 
   update() {
     let past = 0;
@@ -26,9 +25,9 @@ class Game {
       this.ctx.clearRect(0, 0, this.width, this.height);
 
       this.ctx.save();
-      this.player.draw();
+      this.drawGameElements();
       this.ctx.restore();
-      this.player.update(delta);
+      this.updateGameElements();
 
       this.ctx.save();
       this.ctx.font = "20px Arial";
@@ -40,15 +39,26 @@ class Game {
     window.requestAnimationFrame(draw.bind(this));
   }
 
-  //create array with obstacles
+  isCollision() {
+    // colisiones genéricas
+    // (p.x + p.w > o.x && o.x + o.w > p.x && p.y + p.h > o.y && o.y + o.h > p.y )
+    //return this.obstacles.some(obs => (this.player.posX + this.player.width > obs.posX && obs.posX + obs.width > this.player.posX && this.player.posY + this.player.height > obs.posY && obs.posY + obs.height > this.player.posY ))
+  }
 
-  startLevel() {
-    let nObstacles = 8;
-    let obstaclesArray = [];
-    for (let i = 0; i < nObstacles; i++) {
-      obstaclesArray.push(new Obstacle());
+  createGameElements() {
+    this.player = new Player(this.ctx);
+    for (let i = 0; i < this.nObstacles; i++) {
+      this.obstacles.push(new Obstacle(this.ctx, 200 + i * 100));
     }
-    console.log(obstaclesArray);
+  }
+
+  drawGameElements() {
+    this.player.draw();
+    this.obstacles.forEach(e => e.draw());
+  }
+
+  updateGameElements(delta) {
+    this.player.update(delta);
   }
 
   /* 
