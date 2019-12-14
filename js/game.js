@@ -7,6 +7,7 @@ class Game {
 
     this.nObstacles = 7;
     this.obstacles = [];
+    this.spaceBetweenObstacles = 200 / this.nObstacles;
   }
 
   init() {
@@ -51,10 +52,17 @@ class Game {
   createGameElements() {
     this.player = new Player(this.ctx);
     for (let i = 0; i < this.nObstacles; i++) {
-      let h = 100 / this.nObstacles;
-      console.log(h * (i + 1) + i * this.player.width);
       this.obstacles.push(
-        new Obstacle(this.ctx, h * (i + 1) + i * this.player.width, 100)
+        new Obstacle(
+          this.ctx,
+          this.spaceBetweenObstacles * (i + 1) + i * this.player.width,
+          100
+        ),
+        new Obstacle(
+          this.ctx,
+          this.spaceBetweenObstacles * (i + 1) + i * this.player.width,
+          400
+        )
       );
     }
   }
