@@ -1,11 +1,5 @@
 class Car {
-  constructor(
-    ctx,
-    startPosX = 100,
-    startPosY = 100,
-    width = 100,
-    height = 150
-  ) {
+  constructor(ctx, startPosX, startPosY, width = 100, height = 150) {
     this.ctx = ctx;
     this.width = width;
     this.height = height;
@@ -13,8 +7,6 @@ class Car {
     this.posY = startPosY;
     this.image = this.chargeImage();
   }
-
-  // methods for graphics
 
   chargeImage() {
     let image = new Image();

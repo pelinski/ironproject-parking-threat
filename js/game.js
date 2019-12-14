@@ -52,8 +52,9 @@ class Game {
     this.player = new Player(this.ctx);
     for (let i = 0; i < this.nObstacles; i++) {
       let h = 100 / this.nObstacles;
+      console.log(h * (i + 1) + i * this.player.width);
       this.obstacles.push(
-        new Obstacle(this.ctx, h * (i + 1) + i * this.player.width)
+        new Obstacle(this.ctx, h * (i + 1) + i * this.player.width, 100)
       );
     }
   }

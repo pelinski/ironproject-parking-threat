@@ -1,5 +1,5 @@
 class Obstacle extends Car {
-  constructor(ctx, startPosX, startPosY, width, height) {
+  constructor(ctx, startPosX, startPosY, width = 100, height = 150) {
     super(ctx, startPosX, startPosY, width, height);
   }
 
@@ -8,8 +8,8 @@ class Obstacle extends Car {
     this.ctx.save();
     this.ctx.drawImage(
       this.image,
-      this.width,
-      this.height,
+      this.posX,
+      this.posY,
       this.width,
       this.height
     );
