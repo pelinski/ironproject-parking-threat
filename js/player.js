@@ -4,13 +4,11 @@ class Player {
     startPosX = 100,
     startPosY = 100,
     width = 100,
-    height = 150,
-    color = "red"
+    height = 150
   ) {
     this.ctx = ctx;
     this.width = width;
     this.height = height;
-    this.color = color;
     this.posX = startPosX;
     this.posY = startPosY;
     this.speed = 0; //px por segundo;
