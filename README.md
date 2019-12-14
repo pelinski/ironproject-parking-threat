@@ -1,12 +1,23 @@
-# ironproject-parking-threat
+# Parking Threat
 
-+what
-+why
-+how
-+license
 
-## feature-basic
 
-- basic canvas, easy graphics
-- predesigned level (non random)
-- game logic: you loose when you hit nearby cars
+## What
+
+lorem
+
+## Why
+
+lorem
+
+## How
+
+lorem
+
+## License
+
+Please refer to `LICENSE.md`.
+
+## Contributing
+
+If you want to contribute to this project, please add yourself to `CONTRIBUTING.md`.
