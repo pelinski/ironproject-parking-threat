@@ -27,22 +27,29 @@ class Game {
       this.ctx.save();
       this.drawGameElements();
       this.ctx.restore();
-      this.updateGameElements();
+      this.updateGameElements(delta);
+
+      if (this.isCollision) console.log(this.isCollision());
 
       this.ctx.save();
       this.ctx.font = "20px Arial";
       this.ctx.fillStyle = "black";
       this.ctx.fillText("FPS: " + Math.round(fps), 10, 20);
       this.ctx.restore();
+
       window.requestAnimationFrame(draw.bind(this));
     }
     window.requestAnimationFrame(draw.bind(this));
   }
 
   isCollision() {
-    // colisiones genéricas
-    // (p.x + p.w > o.x && o.x + o.w > p.x && p.y + p.h > o.y && o.y + o.h > p.y )
-    //return this.obstacles.some(obs => (this.player.posX + this.player.width > obs.posX && obs.posX + obs.width > this.player.posX && this.player.posY + this.player.height > obs.posY && obs.posY + obs.height > this.player.posY ))
+    return this.obstacles.some(
+      obs =>
+        this.player.posX + this.player.width > obs.posX &&
+        obs.posX + obs.width > this.player.posX &&
+        this.player.posY + this.player.height > obs.posY &&
+        obs.posY + obs.height > this.player.posY
+    );
   }
 
   createGameElements() {
