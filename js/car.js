@@ -14,21 +14,6 @@ class Car {
     this.image = this.chargeImage();
   }
 
-  draw() {
-    this.ctx.save();
-    this.ctx.translate(this.posX + this.width / 2, this.posY + this.height / 2);
-    this.ctx.rotate(-this.rads());
-    this.ctx.drawImage(
-      this.image,
-      -this.width / 2,
-      -this.height / 2,
-      this.width,
-      this.height
-    );
-
-    this.ctx.restore();
-  }
-
   // methods for graphics
 
   chargeImage() {
@@ -45,7 +30,6 @@ class Car {
       "_" +
       color[this.getRandomInt(0, color.length - 1)] +
       ".png";
-    console.log(src);
     return src;
   }
 

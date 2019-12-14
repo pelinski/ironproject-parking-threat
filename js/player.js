@@ -1,12 +1,12 @@
 class Player extends Car {
-  constructor(ctx, startPosX, startPosY, width, height) {
-    super(
-      ctx,
-      (startPosX = 100),
-      (startPosY = 100),
-      (width = 100),
-      (height = 150)
-    );
+  constructor(
+    ctx,
+    startPosX = 100,
+    startPosY = 100,
+    width = 100,
+    height = 150
+  ) {
+    super(ctx, startPosX, startPosY, width, height);
     this.speed = 0; //px por segundo;
     this.rotationDir = 0;
     this.angle = 0;
@@ -17,6 +17,21 @@ class Player extends Car {
       RIGHT: 39
     };
     this.setListeners();
+  }
+
+  draw() {
+    this.ctx.save();
+    this.ctx.translate(this.posX + this.width / 2, this.posY + this.height / 2);
+    this.ctx.rotate(-this.rads());
+    this.ctx.drawImage(
+      this.image,
+      -this.width / 2,
+      -this.height / 2,
+      this.width,
+      this.height
+    );
+
+    this.ctx.restore();
   }
 
   update(delta) {
