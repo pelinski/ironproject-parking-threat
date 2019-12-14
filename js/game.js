@@ -4,7 +4,7 @@ class Game {
     this.ctx = this.canvas.getContext("2d");
     this.width = this.canvas.width;
     this.height = this.canvas.height;
-    this.nObstacles = 4;
+    this.nObstacles = 7;
     this.obstacles = [];
   }
 
@@ -51,7 +51,10 @@ class Game {
   createGameElements() {
     this.player = new Player(this.ctx);
     for (let i = 0; i < this.nObstacles; i++) {
-      this.obstacles.push(new Obstacle(this.ctx, 200 + i * 100));
+      let h = 100 / this.nObstacles;
+      this.obstacles.push(
+        new Obstacle(this.ctx, h * (i + 1) + i * this.player.width)
+      );
     }
   }
 
