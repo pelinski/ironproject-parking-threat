@@ -4,16 +4,16 @@ class Game {
     this.ctx = this.canvas.getContext("2d");
     this.width = this.canvas.width;
     this.height = this.canvas.height;
+    this.obstaclesArray = [];
   }
 
   init() {
+    this.startLevel();
     this.player = new Player(this.ctx);
     this.player.draw();
+    this.obstaclesArray.forEach(e => e.draw());
     this.update();
-    this.startLevel();
   }
-
-  //testabranch
 
   update() {
     let past = 0;
@@ -43,12 +43,10 @@ class Game {
   //create array with obstacles
 
   startLevel() {
-    let nObstacles = 8;
-    let obstaclesArray = [];
+    let nObstacles = 1;
     for (let i = 0; i < nObstacles; i++) {
-      obstaclesArray.push(new Obstacle());
+      this.obstaclesArray.push(new Obstacle(this.ctx));
     }
-    console.log(obstaclesArray);
   }
 
   /* 
