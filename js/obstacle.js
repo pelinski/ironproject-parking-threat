@@ -1,4 +1,5 @@
 class Obstacle {
+
   constructor(
     ctx,
     startPosX = 200,
@@ -13,6 +14,7 @@ class Obstacle {
     this.width = width;
     this.height = height;
     this.color = color;
+
   }
 
   //static, no update method

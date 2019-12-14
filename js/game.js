@@ -4,6 +4,7 @@ class Game {
     this.ctx = this.canvas.getContext("2d");
     this.width = this.canvas.width;
     this.height = this.canvas.height;
+
     this.nObstacles = 7;
     this.obstacles = [];
   }
@@ -11,6 +12,7 @@ class Game {
   init() {
     this.createGameElements();
     this.drawGameElements();
+
     this.update();
   }
 
@@ -48,6 +50,7 @@ class Game {
     );
   }
 
+
   createGameElements() {
     this.player = new Player(this.ctx);
     for (let i = 0; i < this.nObstacles; i++) {
@@ -76,6 +79,7 @@ class Game {
     this.ctx.fillStyle = "black";
     this.ctx.fillText("FPS: " + Math.round(fps), 10, 20);
     this.ctx.restore();
+
   }
 
   /* 
