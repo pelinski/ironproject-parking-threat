@@ -5,7 +5,8 @@ window.onload = function() {
         game.init();
     
     };*/
-  let game = new Game();
-  debugger;
+
+  var game = new Game();
+
   game.init();
 };
