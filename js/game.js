@@ -21,21 +21,17 @@ class Game {
     function draw(elapsed) {
       delta = elapsed - past;
       past = elapsed;
-      let fps = 1000 / delta;
+
+      //update game window
       this.ctx.clearRect(0, 0, this.width, this.height);
 
-      this.ctx.save();
+      //draw and update game elements
       this.drawGameElements();
-      this.ctx.restore();
       this.updateGameElements(delta);
 
       if (this.isCollision) console.log(this.isCollision());
 
-      this.ctx.save();
-      this.ctx.font = "20px Arial";
-      this.ctx.fillStyle = "black";
-      this.ctx.fillText("FPS: " + Math.round(fps), 10, 20);
-      this.ctx.restore();
+      this.drawFps(delta);
 
       window.requestAnimationFrame(draw.bind(this));
     }
@@ -60,17 +56,27 @@ class Game {
   }
 
   drawGameElements() {
+    this.ctx.save();
     this.player.draw();
     this.obstacles.forEach(e => e.draw());
+    this.ctx.restore();
   }
 
   updateGameElements(delta) {
     this.player.update(delta);
   }
 
+  drawFps(delta) {
+    let fps = 1000 / delta;
+    this.ctx.save();
+    this.ctx.font = "20px Arial";
+    this.ctx.fillStyle = "black";
+    this.ctx.fillText("FPS: " + Math.round(fps), 10, 20);
+    this.ctx.restore();
+  }
+
   /* 
   TODO
-  isCollision() {}
   gameOver() {}
   */
 }
