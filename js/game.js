@@ -31,8 +31,6 @@ class Game {
       this.drawGameElements();
       this.updateGameElements(delta);
 
-      if (this.isCollision) console.log(this.isCollision());
-
       this.drawFps(delta);
 
       window.requestAnimationFrame(draw.bind(this));
@@ -49,7 +47,6 @@ class Game {
         obs.posY + obs.height > this.player.posY
     );
   }
-
 
   createGameElements() {
     this.player = new Player(this.ctx);
@@ -79,7 +76,6 @@ class Game {
     this.ctx.fillStyle = "black";
     this.ctx.fillText("FPS: " + Math.round(fps), 10, 20);
     this.ctx.restore();
-
   }
 
   /* 
