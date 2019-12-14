@@ -1,6 +1,6 @@
 # Parking Threat
 
-lorem
+
 
 ## What
 

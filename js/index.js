@@ -5,6 +5,8 @@ window.onload = function() {
         game.init();
     
     };*/
-  let game = new Game();
+
+  var game = new Game();
+
   game.init();
 };

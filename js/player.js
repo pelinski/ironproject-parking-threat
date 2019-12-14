@@ -1,8 +1,15 @@
 class Player {
-  constructor(ctx, startPosX = 100, startPosY = 100, color = "red") {
+  constructor(
+    ctx,
+    startPosX = 100,
+    startPosY = 100,
+    width = 100,
+    height = 150,
+    color = "red"
+  ) {
     this.ctx = ctx;
-    this.width = 60;
-    this.height = 100;
+    this.width = width;
+    this.height = height;
     this.color = color;
     this.posX = startPosX;
     this.posY = startPosY;
