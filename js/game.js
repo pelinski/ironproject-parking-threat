@@ -4,10 +4,11 @@ class Game {
     this.ctx = this.canvas.getContext("2d");
     this.width = this.canvas.width;
     this.height = this.canvas.height;
-
-    this.nObstacles = 7;
+    this.player;
+    this.parkingPlace;
+    this.nObstacles = 5; //Ntot = 2n
     this.obstacles = [];
-    this.spaceBetweenObstacles = 200 / this.nObstacles;
+    this.spaceBetweenObstacles = 100 / this.nObstacles;
   }
 
   init() {
@@ -51,20 +52,7 @@ class Game {
 
   createGameElements() {
     this.player = new Player(this.ctx);
-    for (let i = 0; i < this.nObstacles; i++) {
-      this.obstacles.push(
-        new Obstacle(
-          this.ctx,
-          this.spaceBetweenObstacles * (i + 1) + i * this.player.width,
-          100
-        ),
-        new Obstacle(
-          this.ctx,
-          this.spaceBetweenObstacles * (i + 1) + i * this.player.width,
-          400
-        )
-      );
-    }
+    this.createParkedCars();
   }
 
   drawGameElements() {
@@ -85,6 +73,62 @@ class Game {
     this.ctx.fillStyle = "black";
     this.ctx.fillText("FPS: " + Math.round(fps), 10, 20);
     this.ctx.restore();
+  }
+
+  createParkedCars() {
+    let parkingPlaceIdx = this.getRandomInt(0, this.nObstacles - 1);
+    let parkingPlaceRow = Math.round(Math.random());
+    for (let i = 0; i < this.nObstacles; i++) {
+      if (i != parkingPlaceIdx) {
+        this.obstacles.push(
+          new Obstacle(
+            this.ctx,
+            this.spaceBetweenObstacles * (i + 1) + i * this.player.width,
+            100
+          ),
+          new Obstacle(
+            this.ctx,
+            this.spaceBetweenObstacles * (i + 1) + i * this.player.width,
+            400
+          )
+        );
+      } else if (!parkingPlaceRow) {
+        this.obstacles.push(
+          new Obstacle(
+            this.ctx,
+            this.spaceBetweenObstacles * (i + 1) + i * this.player.width,
+            100
+          )
+        );
+        this.parkingPlace = new parkingPlace(
+          this.ctx,
+          parkingPlaceIdx * this.player.width,
+          400,
+          this.player.width,
+          this.player.height
+        );
+      } else {
+        this.obstacles.push(
+          new Obstacle(
+            this.ctx,
+            this.spaceBetweenObstacles * (i + 1) + i * this.player.width,
+            400
+          )
+        );
+        this.parkingPlace = new parkingPlace(
+          this.ctx,
+          parkingPlaceIdx * this.player.width,
+          100,
+          this.player.width,
+          this.player.height
+        );
+      }
+    }
+    console.log(this.parkingPlace);
+  }
+
+  getRandomInt(start, end) {
+    return Math.floor(Math.random() * (end - start)) + start;
   }
 
   /* 
