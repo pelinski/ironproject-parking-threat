@@ -1,8 +1,8 @@
 class Player extends Car {
   constructor(
     ctx,
-    startPosX = 100,
-    startPosY = 100,
+    startPosX = 650,
+    startPosY = 200,
     width = 100,
     height = 150
   ) {
@@ -16,6 +16,7 @@ class Player extends Car {
       LEFT: 37,
       RIGHT: 39
     };
+
     this.setListeners();
   }
 
@@ -34,9 +35,25 @@ class Player extends Car {
     this.ctx.restore();
   }
 
-  update(delta) {
-    this.posX += Math.sin(this.rads()) * (this.speed / 1000) * delta;
-    this.posY += Math.cos(this.rads()) * (this.speed / 1000) * delta;
+  update(delta, obs) {
+    if ( 
+      //there is a collision
+      obs.some(
+        function(obs) {
+          return (
+            this.posX + this.width > obs.posX &&
+            obs.posX + obs.width > this.posX &&
+            this.posY + this.height > obs.posY &&
+            obs.posY + obs.height > this.posY
+          );
+        }.bind(this)
+      )
+    ) {
+      this.posX -= Math.sin(this.rads()) * (this.speed / 1000) * delta;
+      this.posY -= Math.cos(this.rads()) * (this.speed / 1000) * delta;
+    } else {
+      this.move(delta);
+    }
 
     /*if (this.posX > 500) {
       this.posX = -100;
@@ -46,6 +63,11 @@ class Player extends Car {
     }*/
 
     this.angle -= 1 * this.rotationDir;
+  }
+
+  move(delta) {
+    this.posX += Math.sin(this.rads()) * (this.speed / 1000) * delta;
+    this.posY += Math.cos(this.rads()) * (this.speed / 1000) * delta;
   }
 
   setListeners() {

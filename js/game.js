@@ -6,9 +6,11 @@ class Game {
     this.height = this.canvas.height;
     this.player;
     this.parkingPlace;
-    this.nObstacles = 5; //Ntot = 2n
+    this.numberOfObstacles = 5; //Ntot = 2n
     this.obstacles = [];
-    this.spaceBetweenObstacles = 100 / this.nObstacles;
+    this.spaceBetweenObstacles = 100 / this.numberOfObstacles;
+    this.parkingRowPositions = [100, 600];
+    this.numberOfCollisions=0;
   }
 
   init() {
@@ -21,6 +23,7 @@ class Game {
   update() {
     let past = 0;
     let delta = 0;
+    
 
     function draw(elapsed) {
       delta = elapsed - past;
@@ -31,9 +34,12 @@ class Game {
 
       //draw and update game elements
       this.drawGameElements();
-      this.updateGameElements(delta);
-
+      this.updateGameElements(delta, this.obstacles);
       this.drawFps(delta);
+
+      //check game Over
+      this.gameOver();
+    
 
       window.requestAnimationFrame(draw.bind(this));
     }
@@ -41,18 +47,24 @@ class Game {
   }
 
   isCollision() {
-    return this.obstacles.some(
+    if (this.obstacles.some(
       obs =>
         this.player.posX + this.player.width > obs.posX &&
         obs.posX + obs.width > this.player.posX &&
         this.player.posY + this.player.height > obs.posY &&
         obs.posY + obs.height > this.player.posY
-    );
+    )) {
+      //this.numberOfCollisions++;
+      console.error("collision")
+    }
+
   }
+
 
   createGameElements() {
     this.player = new Player(this.ctx);
     this.createParkedCars();
+    console.log(this.obstacles)
   }
 
   drawGameElements() {
@@ -62,8 +74,8 @@ class Game {
     this.ctx.restore();
   }
 
-  updateGameElements(delta) {
-    this.player.update(delta);
+  updateGameElements(delta,obstacles) {
+    this.player.update(delta,obstacles);
   }
 
   drawFps(delta) {
@@ -76,63 +88,71 @@ class Game {
   }
 
   createParkedCars() {
-    let parkingPlaceIdx = this.getRandomInt(0, this.nObstacles - 1);
+    let parkingPlaceIdx = this.getRandomInt(0, this.numberOfObstacles - 1);
     let parkingPlaceRow = Math.round(Math.random());
-    for (let i = 0; i < this.nObstacles; i++) {
+
+    for (let i = 0; i < this.numberOfObstacles; i++) {
       if (i != parkingPlaceIdx) {
         this.obstacles.push(
           new Obstacle(
             this.ctx,
             this.spaceBetweenObstacles * (i + 1) + i * this.player.width,
-            100
+            this.parkingRowPositions[0]
           ),
           new Obstacle(
             this.ctx,
             this.spaceBetweenObstacles * (i + 1) + i * this.player.width,
-            400
+            this.parkingRowPositions[1]
           )
-        );
-      } else if (!parkingPlaceRow) {
-        this.obstacles.push(
-          new Obstacle(
-            this.ctx,
-            this.spaceBetweenObstacles * (i + 1) + i * this.player.width,
-            100
-          )
-        );
-        this.parkingPlace = new parkingPlace(
-          this.ctx,
-          parkingPlaceIdx * this.player.width,
-          400,
-          this.player.width,
-          this.player.height
-        );
-      } else {
-        this.obstacles.push(
-          new Obstacle(
-            this.ctx,
-            this.spaceBetweenObstacles * (i + 1) + i * this.player.width,
-            400
-          )
-        );
-        this.parkingPlace = new parkingPlace(
-          this.ctx,
-          parkingPlaceIdx * this.player.width,
-          100,
-          this.player.width,
-          this.player.height
         );
       }
     }
-    console.log(this.parkingPlace);
+
+    if (parkingPlaceRow == 0) {
+      this.obstacles.push(
+        new Obstacle(
+          this.ctx,
+          this.spaceBetweenObstacles * (parkingPlaceIdx + 1) +
+            parkingPlaceIdx * this.player.width,
+          this.parkingRowPositions[1]
+        )
+      );
+      this.parkingPlace = new parkingPlace(
+        this.ctx,
+        parkingPlaceIdx * this.player.width,
+        this.parkingRowPositions[0],
+        this.player.width,
+        this.player.height
+      );
+    } else if (parkingPlaceRow == 1) {
+      this.obstacles.push(
+        new Obstacle(
+          this.ctx,
+          this.spaceBetweenObstacles * (parkingPlaceIdx + 1) +
+            parkingPlaceIdx * this.player.width,
+          this.parkingRowPositions[0]
+        )
+      );
+      this.parkingPlace = new parkingPlace(
+        this.ctx,
+        parkingPlaceIdx * this.player.width,
+        this.parkingRowPositions[1],
+        this.player.width,
+        this.player.height
+      );
+    }
   }
 
   getRandomInt(start, end) {
     return Math.floor(Math.random() * (end - start)) + start;
   }
 
-  /* 
-  TODO
-  gameOver() {}
-  */
+  gameOver() {
+    this.isCollision();
+    
+    if (this.numberOfCollisions == 3) {
+      console.error("Game Over");
+      return true;
+    }
+  }
 }
