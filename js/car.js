@@ -5,6 +5,10 @@ class Car {
     this.height = height;
     this.posX = startPosX;
     this.posY = startPosY;
+    this.carCenter = [
+      this.posX + this.width / 2,
+      this.posY + this.height / 2
+    ];
     this.image = this.chargeImage();
   }
 

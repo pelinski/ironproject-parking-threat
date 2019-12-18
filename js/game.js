@@ -124,28 +124,30 @@ class Game {
 
     for (let i = 0; i < this.numberOfObstacles; i++) {
       if (i != parkingPlaceIdx) {
+        let rotate = Math.round(Math.random());
         this.obstacles.push(
           new Obstacle(
             this.ctx,
             this.spaceBetweenObstacles * (i + 1) + i * this.player.width,
-            this.parkingRowPositions[0]
+            this.parkingRowPositions[0],rotate
           ),
           new Obstacle(
             this.ctx,
             this.spaceBetweenObstacles * (i + 1) + i * this.player.width,
-            this.parkingRowPositions[1]
+            this.parkingRowPositions[1], rotate
           )
         );
       }
     }
 
     if (parkingPlaceRow == 0) {
+      let rotate = Math.round(Math.random());
       this.obstacles.push(
         new Obstacle(
           this.ctx,
           this.spaceBetweenObstacles * (parkingPlaceIdx + 1) +
             parkingPlaceIdx * this.player.width,
-          this.parkingRowPositions[1]
+          this.parkingRowPositions[1], rotate
         )
       );
       this.parkingPlace = new parkingPlace(
@@ -156,12 +158,13 @@ class Game {
         this.player.height
       );
     } else if (parkingPlaceRow == 1) {
+      let rotate = Math.round(Math.random());
       this.obstacles.push(
         new Obstacle(
           this.ctx,
           this.spaceBetweenObstacles * (parkingPlaceIdx + 1) +
             parkingPlaceIdx * this.player.width,
-          this.parkingRowPositions[0]
+          this.parkingRowPositions[0], rotate
         )
       );
       this.parkingPlace = new parkingPlace(

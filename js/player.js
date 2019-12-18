@@ -28,12 +28,7 @@ class Player extends Car {
       B: 0,
       C: 0,
       D: 0
-    };
-
-    this.carCenter = [
-      this.posX + this.width / 2,
-      this.posY + this.height / 2
-    ];
+    }
 
     this.carAngle = -90; // car facing -y axis
 
