@@ -10,7 +10,7 @@ class Game {
     this.obstacles = [];
     this.spaceBetweenObstacles = 100 / this.numberOfObstacles;
     this.parkingRowPositions = [100, 600];
-    this.numberOfCollisions=0;
+    this.numberOfCollisions = 0;
   }
 
   init() {
@@ -23,7 +23,6 @@ class Game {
   update() {
     let past = 0;
     let delta = 0;
-    
 
     function draw(elapsed) {
       delta = elapsed - past;
@@ -39,7 +38,6 @@ class Game {
 
       //check game Over
       this.gameOver();
-    
 
       window.requestAnimationFrame(draw.bind(this));
     }
@@ -47,17 +45,32 @@ class Game {
   }
 
   isCollision() {
-    if (this.obstacles.some(
-      obs =>
-        this.player.posX + this.player.width > obs.posX &&
-        obs.posX + obs.width > this.player.posX &&
-        this.player.posY + this.player.height > obs.posY &&
-        obs.posY + obs.height > this.player.posY
-    )) {
-      //this.numberOfCollisions++;
-      console.error("collision")
-    }
+    let collision = this.obstacles.some(
+      function(obs) {
+        return (
+          (this.player.carPoints.A[0] > obs.posX &&
+            this.player.carPoints.A[0] < obs.posX + obs.width &&
+            this.player.carPoints.A[1] > obs.posY &&
+            this.player.carPoints.A[1] < obs.posY + obs.height) ||
+          (this.player.carPoints.B[0] > obs.posX &&
+            this.player.carPoints.B[0] < obs.posX + obs.width &&
+            this.player.carPoints.B[1] > obs.posY &&
+            this.player.carPoints.B[1] < obs.posY + obs.height) ||
+          (this.player.carPoints.C[0] > obs.posX &&
+            this.player.carPoints.C[0] < obs.posX + obs.width &&
+            this.player.carPoints.C[1] > obs.posY &&
+            this.player.carPoints.C[1] < obs.posY + obs.height) ||
+          (this.player.carPoints.D[0] > obs.posX &&
+            this.player.carPoints.D[0] < obs.posX + obs.width &&
+            this.player.carPoints.D[1] > obs.posY &&
+            this.player.carPoints.D[1] < obs.posY + obs.height)
+        );
+      }.bind(this)
+    );
 
+    if (collision) {
+      console.log("collision");
+    }
   }
 
   createGameElements() {
@@ -69,11 +82,22 @@ class Game {
     this.ctx.save();
     this.player.draw();
     this.obstacles.forEach(e => e.draw());
+    //control Points
+    this.obstacles.forEach(
+      function(e) {
+        this.ctx.beginPath();
+        this.ctx.rect(e.posX, e.posY, 10, 10);
+        this.ctx.rect(e.posX, e.posY + e.height, 10, 10);
+        this.ctx.rect(e.posX + e.width, e.posY, 10, 10);
+        this.ctx.rect(e.posX + e.width, e.posY + e.height, 10, 10);
+        this.ctx.stroke();
+      }.bind(this)
+    );
     this.ctx.restore();
   }
 
-  updateGameElements(delta,obstacles) {
-    this.player.update(delta,obstacles);
+  updateGameElements(delta, obstacles) {
+    this.player.update(delta, obstacles);
   }
 
   drawFps(delta) {
@@ -147,7 +171,7 @@ class Game {
 
   gameOver() {
     this.isCollision();
-    
+
     if (this.numberOfCollisions == 3) {
       console.error("Game Over");
       return true;
