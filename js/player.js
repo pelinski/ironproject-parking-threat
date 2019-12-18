@@ -7,6 +7,8 @@ class Player extends Car {
     height = 150
   ) {
     super(ctx, startPosX, startPosY, width, height);
+    this.startPosX = 650;
+    this.startPosY = 200;
     this.carVertex = {
       A: [-this.width / 2, -this.height / 2],
       B: [this.width / 2, -this.height / 2],
@@ -14,15 +16,27 @@ class Player extends Car {
       D: [-this.width / 2, this.height / 2]
     };
     this.carVertexAbs = {
-      A: [],
+      A: [startPosX, startPosY],
       B: [],
       C: [],
       D: []
     };
+
+    this.carCenter = [
+      this.startPosX + this.width / 2,
+      this.startPosY + this.height / 2
+    ];
+    this.angC0 = Math.atan(this.height / this.width);
+    this.angC = Math.atan(this.height / this.width);
+    this.posC = [
+      this.carCenter[0] + this.width / 2,
+      this.carCenter[1] + this.height / 2
+    ];
+
     this.carCenter = [this.posX + this.width / 2, this.posY + this.height / 2];
     this.speed = 0; //px por segundo;
-    this.rotationDir = 0;
-    this.angle = -90; // car facing up
+    this.rotationDir = 0; // changes to -1,1 when LEFT or RIGHT is pressed
+    this.angle = -90; // car facing -y axis
     this.keyMap = {
       UP: 38,
       DOWN: 40,
@@ -48,87 +62,57 @@ class Player extends Car {
     this.ctx.beginPath();
     this.ctx.rect(
       //center
-      this.posX + this.width / 2,
-      this.posY + this.height / 2,
+      this.carCenter[0],
+      this.carCenter[1],
       5,
       5
     ); //control vertices
-    this.ctx.rect(this.carVertexAbs.A[1], this.carVertexAbs.A[0], 5, 5);
+    this.ctx.stroke();
+    this.ctx.beginPath();
+    this.ctx.rect(this.posC[0], this.posC[1], 5, 5);
     this.ctx.stroke();
   }
 
   update(delta, obs) {
-    if (
-      this.carVertexAbs.A[0] > 50 &&
-      this.carVertexAbs.A[0] < 300 &&
-      this.carVertexAbs.A[1] < 100 + 150 &&
-      this.carVertexAbs.A[0] > 100
-    ) {
-      console.error("in");
-      this.posX -= 0.5 * Math.cos(this.rads()) * (this.speed / 1000) * delta;
-      this.posY -= 0.5 * Math.sin(this.rads()) * (this.speed / 1000) * delta;
-    } else {
-      this.move(delta);
-    }
+    this.move(delta);
 
-    this.positions();
-    // do not get out of the canvas
-
-    /*if (this.posX > 500) {
-      this.posX = -100;
-    }
-    if (this.posY > 500) {
-      this.posY = -100;
-    }*/
-
-    this.angle -= 1 * this.rotationDir;
+    this.angle += 1 * this.rotationDir; //rotationDir is 0 when no key is pressed
+    this.angC += (Math.PI / 180) * this.rotationDir;
+    
 
     //update center position
     this.carCenter[0] = this.posX + this.width / 2;
     this.carCenter[1] = this.posY + this.height / 2;
-    this.positions();
+
+    
+    this.updateVertexAbs();
   }
 
   move(delta) {
     this.posX += Math.cos(this.rads()) * (this.speed / 1000) * delta;
     this.posY += Math.sin(this.rads()) * (this.speed / 1000) * delta;
+    this.posC[0] += Math.cos(this.rads()) * (this.speed / 1000) * delta;
+    this.posC[1] += Math.sin(this.rads()) * (this.speed / 1000) * delta;
   }
 
-  positions() {
-    //TODO : simplify this sintax
+  updateVertexAbs() {
+    let angle = (Math.PI * this.rotationDir) / 180;
+    let aux = [];
+    aux[0] = this.posC[0] - this.carCenter[0];
+    aux[1] = this.posC[1] - this.carCenter[1];
 
-    this.carVertexAbs.A = this.sumVectors(this.carVertex.A, this.carCenter);
-    this.carVertexAbs.B = this.sumVectors(this.carVertex.B, this.carCenter);
-    this.carVertexAbs.C = this.sumVectors(this.carVertex.C, this.carCenter);
-    this.carVertexAbs.D = this.sumVectors(this.carVertex.D, this.carCenter);
+    //angle in rad
+    var rotationMatrix = new Array(2);
+    rotationMatrix[0] = [Math.cos(angle), -Math.sin(angle)];
+    rotationMatrix[1] = [Math.sin(angle), Math.cos(angle)];
 
-    /*
-    
-    console.log(this.vertexRot(this.carVertex.A));
-    Object.keys(this.carVertex).forEach(
-      e => (this.carVertex.e = this.vertexRot(this.carVertex.e))
-    );
-    Object.keys(this.carVertexAbs).forEach(
-      e =>
-        (this.carVertexAbs.e = this.sumVectors(
-          this.carVertex.e,
-          this.carCenter
-        ))
-    );*/
+    let At = [];
 
-    /*
-    this.carVertex.forEach(e => this.vertexRot(this.carVertex.e));
-    this.carVertexAbs.forEach(e => this.sumVectors(this.carVertex.e, this.carCenter));
-    */
-  }
+    At[0] = rotationMatrix[0][0] * aux[0] + rotationMatrix[0][1] * aux[1];
+    At[1] = rotationMatrix[1][0] * aux[0] + rotationMatrix[1][1] * aux[1];
 
-  rotateAbs(type) {
-    if (type != 0) {
-      this.carVertex.A = this.vertexRot(this.carVertex.A);
-      this.carVertex.B = this.vertexRot(this.carVertex.B);
-      this.carVertex.C = this.vertexRot(this.carVertex.C);
-      this.carVertex.D = this.vertexRot(this.carVertex.D);
-    }
+    this.posC[0] = At[0] + this.carCenter[0];
+    this.posC[1] = At[1] + this.carCenter[1];
   }
 
   setListeners() {
@@ -144,11 +128,9 @@ class Player extends Car {
       } else if (event.keyCode === this.keyMap.DOWN) {
         this.speed = -100 * type;
       } else if (event.keyCode === this.keyMap.RIGHT) {
-        this.rotationDir = -1 * type;
-        this.rotateAbs(type);
-      } else if (event.keyCode === this.keyMap.LEFT) {
         this.rotationDir = 1 * type;
-        this.rotateAbs(type);
+      } else if (event.keyCode === this.keyMap.LEFT) {
+        this.rotationDir = -1 * type;
       }
     };
   }
@@ -157,26 +139,10 @@ class Player extends Car {
     return (this.angle * 2 * Math.PI) / 360;
   }
 
-  vertexRot(A) {
-    var rotationMatrix = new Array(2);
-    rotationMatrix[0] = [Math.cos(this.rads()), -Math.sin(this.rads())];
-    rotationMatrix[1] = [Math.sin(this.rads()), Math.cos(this.rads())];
-
-    let At = [];
-
-    At[0] = rotationMatrix[0][0] * A[0] + rotationMatrix[0][1] * A[1];
-    At[1] = rotationMatrix[1][0] * A[0] + rotationMatrix[1][1] * A[1];
-
-
-    At[1] = -At[1]; 
-
-    return At;
-  }
-
-  sumVectors(a, b) {
+  sumVectors(a, b, type = 1) {
     let c = [];
     for (let i = 0; i < a.length; i++) {
-      c[i] = a[i] + b[i];
+      c[i] = a[i] + type * b[i];
     }
     return c;
   }
