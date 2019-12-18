@@ -9,34 +9,42 @@ class Player extends Car {
     super(ctx, startPosX, startPosY, width, height);
     this.startPosX = 650;
     this.startPosY = 200;
-    this.carVertex = {
-      A: [-this.width / 2, -this.height / 2],
-      B: [this.width / 2, -this.height / 2],
-      C: [this.width / 2, this.height / 2],
-      D: [-this.width / 2, this.height / 2]
+
+    
+
+    this.carPointsRelative = { // -20 is a correction for image border
+      A: [-this.width / 2, -(this.height-20) / 2], 
+      B: [this.width / 2, -(this.height-20) / 2],
+      C: [this.width / 2, (this.height-20) / 2],
+      D: [-this.width / 2, (this.height-20) / 2]
     };
-    this.carVertexAbs = {
-      A: [startPosX, startPosY],
+
+    this.carPoints = {
+      A: [],
       B: [],
       C: [],
       D: []
     };
 
+    this.carPointsAng = {
+      A: 0,
+      B: 0,
+      C: 0,
+      D: 0
+    };
+
+   
+
     this.carCenter = [
       this.startPosX + this.width / 2,
       this.startPosY + this.height / 2
     ];
-    this.angC0 = Math.atan(this.height / this.width);
-    this.angC = Math.atan(this.height / this.width);
-    this.posC = [
-      this.carCenter[0] + this.width / 2,
-      this.carCenter[1] + this.height / 2
-    ];
 
-    this.carCenter = [this.posX + this.width / 2, this.posY + this.height / 2];
+    this.carAngle = -90; // car facing -y axis
+
     this.speed = 0; //px por segundo;
     this.rotationDir = 0; // changes to -1,1 when LEFT or RIGHT is pressed
-    this.angle = -90; // car facing -y axis
+
     this.keyMap = {
       UP: 38,
       DOWN: 40,
@@ -44,7 +52,11 @@ class Player extends Car {
       RIGHT: 39
     };
 
+
+    //init
     this.setListeners();
+    this.getCarPoints();
+    this.getCarPointsAng();
   }
 
   draw() {
@@ -60,60 +72,87 @@ class Player extends Car {
     );
     this.ctx.restore();
     this.ctx.beginPath();
-    this.ctx.rect(
-      //center
-      this.carCenter[0],
-      this.carCenter[1],
-      5,
-      5
-    ); //control vertices
-    this.ctx.stroke();
-    this.ctx.beginPath();
-    this.ctx.rect(this.posC[0], this.posC[1], 5, 5);
+    this.ctx.rect(this.carCenter[0], this.carCenter[1], 5, 5);
+    this.ctx.rect(this.carPoints.B[0], this.carPoints.B[1], 5, 5);
+    this.ctx.rect(this.carPoints.A[0], this.carPoints.A[1], 5, 5);
+    this.ctx.rect(this.carPoints.C[0], this.carPoints.C[1], 5, 5);
+    this.ctx.rect(this.carPoints.D[0], this.carPoints.D[1], 5, 5);
     this.ctx.stroke();
   }
 
   update(delta, obs) {
     this.move(delta);
 
-    this.angle += 1 * this.rotationDir; //rotationDir is 0 when no key is pressed
-    this.angC += (Math.PI / 180) * this.rotationDir;
-    
+    this.carAngle += 1 * this.rotationDir; //rotationDir is 0 when no key is pressed
 
     //update center position
     this.carCenter[0] = this.posX + this.width / 2;
     this.carCenter[1] = this.posY + this.height / 2;
 
-    
-    this.updateVertexAbs();
+    this.updateCarPoints();
   }
 
   move(delta) {
     this.posX += Math.cos(this.rads()) * (this.speed / 1000) * delta;
     this.posY += Math.sin(this.rads()) * (this.speed / 1000) * delta;
-    this.posC[0] += Math.cos(this.rads()) * (this.speed / 1000) * delta;
-    this.posC[1] += Math.sin(this.rads()) * (this.speed / 1000) * delta;
+
+    for (const point in this.carPoints) {
+      this.carPoints[point][0] +=
+        Math.cos(this.rads()) * (this.speed / 1000) * delta;
+      this.carPoints[point][1] +=
+        Math.sin(this.rads()) * (this.speed / 1000) * delta;
+    }
   }
 
-  updateVertexAbs() {
-    let angle = (Math.PI * this.rotationDir) / 180;
-    let aux = [];
-    aux[0] = this.posC[0] - this.carCenter[0];
-    aux[1] = this.posC[1] - this.carCenter[1];
+  //positions init;
 
-    //angle in rad
+  getCarPoints() {
+    for (const point in this.carPoints) {
+      this.carPoints[point] = [
+        this.carCenter[0] + this.carPointsRelative[point][0],
+        this.carCenter[1] + this.carPointsRelative[point][1]
+      ];
+    }
+  }
+
+  getCarPointsAng() {
+    for (const point in this.carPointsAng) {
+      this.carPointsAng[point] = Math.atan(
+        this.carPointsRelative[point][1] / this.carPointsRelative[point][0]
+      );
+    }
+  }
+
+
+  //update point positions
+
+  updateCarPoints(){
+    let angle = (Math.PI * this.rotationDir) / 180;
     var rotationMatrix = new Array(2);
     rotationMatrix[0] = [Math.cos(angle), -Math.sin(angle)];
     rotationMatrix[1] = [Math.sin(angle), Math.cos(angle)];
 
-    let At = [];
+    let auxRel = [];
+    let T = [];
 
-    At[0] = rotationMatrix[0][0] * aux[0] + rotationMatrix[0][1] * aux[1];
-    At[1] = rotationMatrix[1][0] * aux[0] + rotationMatrix[1][1] * aux[1];
+    for(const point in this.carPoints) {
 
-    this.posC[0] = At[0] + this.carCenter[0];
-    this.posC[1] = At[1] + this.carCenter[1];
+      //get relative position to center of car
+      auxRel[0] = this.carPoints[point][0] - this.carCenter[0];
+      auxRel[1] = this.carPoints[point][1] - this.carCenter[1];
+
+      //rotate point over car center
+      T[0] = rotationMatrix[0][0] * auxRel[0] + rotationMatrix[0][1] * auxRel[1];
+      T[1] = rotationMatrix[1][0] * auxRel[0] + rotationMatrix[1][1] * auxRel[1];
+
+      //update position
+      this.carPoints[point][0] = T[0] + this.carCenter[0];
+      this.carPoints[point][1] = T[1] + this.carCenter[1];
+    }
   }
+
+
+  //events
 
   setListeners() {
     document.addEventListener("keydown", this.eventHandler(1).bind(this));
@@ -135,8 +174,10 @@ class Player extends Car {
     };
   }
 
+  //maths
+
   rads() {
-    return (this.angle * 2 * Math.PI) / 360;
+    return (this.carAngle * 2 * Math.PI) / 360;
   }
 
   sumVectors(a, b, type = 1) {

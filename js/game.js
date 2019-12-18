@@ -64,7 +64,6 @@ class Game {
   createGameElements() {
     this.player = new Player(this.ctx);
     this.createParkedCars();
-    console.log(this.obstacles)
   }
 
   drawGameElements() {
