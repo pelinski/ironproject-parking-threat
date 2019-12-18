@@ -9,7 +9,7 @@ class Game {
     this.numberOfObstacles = 5; //Ntot = 2n
     this.obstacles = [];
     this.spaceBetweenObstacles = 100 / this.numberOfObstacles;
-    this.parkingRowPositions = [100, 600];
+    this.parkingRowPositions = [50, 400];
     this.numberOfCollisions = 0;
   }
 
@@ -36,8 +36,12 @@ class Game {
       this.updateGameElements(delta, this.obstacles);
       this.drawFps(delta);
 
-      //check game Over
+      //check win status
       this.gameOver();
+      this.win();
+      if (this.win()) {
+        console.error("you won")
+      }
 
       window.requestAnimationFrame(draw.bind(this));
     }
@@ -45,32 +49,29 @@ class Game {
   }
 
   isCollision() {
-    let collision = this.obstacles.some(
+    return this.obstacles.some(
       function(obs) {
         return (
+          //why is <for keys in object> not working
           (this.player.carPoints.A[0] > obs.posX &&
-            this.player.carPoints.A[0] < obs.posX + obs.width &&
+            this.player.carPoints.A[0] < obs.posX + obs.width-15 &&
             this.player.carPoints.A[1] > obs.posY &&
-            this.player.carPoints.A[1] < obs.posY + obs.height) ||
+            this.player.carPoints.A[1] < obs.posY + obs.height-15) ||
           (this.player.carPoints.B[0] > obs.posX &&
-            this.player.carPoints.B[0] < obs.posX + obs.width &&
+            this.player.carPoints.B[0] < obs.posX + obs.width-15 &&
             this.player.carPoints.B[1] > obs.posY &&
-            this.player.carPoints.B[1] < obs.posY + obs.height) ||
+            this.player.carPoints.B[1] < obs.posY + obs.height-15) ||
           (this.player.carPoints.C[0] > obs.posX &&
-            this.player.carPoints.C[0] < obs.posX + obs.width &&
+            this.player.carPoints.C[0] < obs.posX + obs.width-15 &&
             this.player.carPoints.C[1] > obs.posY &&
-            this.player.carPoints.C[1] < obs.posY + obs.height) ||
+            this.player.carPoints.C[1] < obs.posY + obs.height-15) ||
           (this.player.carPoints.D[0] > obs.posX &&
-            this.player.carPoints.D[0] < obs.posX + obs.width &&
+            this.player.carPoints.D[0] < obs.posX + obs.width-15 &&
             this.player.carPoints.D[1] > obs.posY &&
-            this.player.carPoints.D[1] < obs.posY + obs.height)
+            this.player.carPoints.D[1] < obs.posY + obs.height-15)
         );
       }.bind(this)
     );
-
-    if (collision) {
-      console.log("collision");
-    }
   }
 
   createGameElements() {
@@ -83,13 +84,21 @@ class Game {
     this.player.draw();
     this.obstacles.forEach(e => e.draw());
     //control Points
+    this.ctx.beginPath();
+    this.ctx.rect(this.parkingPlace.posX-20, this.parkingPlace.posY-10, 2, 2);
+    this.ctx.rect(this.parkingPlace.posX-20, this.parkingPlace.posY + this.parkingPlace.height+10, 2, 2);
+    this.ctx.rect(this.parkingPlace.posX + this.parkingPlace.width+20, this.parkingPlace.posY-10, 2, 2);
+    this.ctx.rect(this.parkingPlace.posX + this.parkingPlace.width+20, this.parkingPlace.posY + this.parkingPlace.height+10, 2, 2);
+
+    this.ctx.stroke();
+    
     this.obstacles.forEach(
       function(e) {
         this.ctx.beginPath();
         this.ctx.rect(e.posX, e.posY, 10, 10);
-        this.ctx.rect(e.posX, e.posY + e.height, 10, 10);
-        this.ctx.rect(e.posX + e.width, e.posY, 10, 10);
-        this.ctx.rect(e.posX + e.width, e.posY + e.height, 10, 10);
+        this.ctx.rect(e.posX, e.posY + e.height-15, 10, 10);
+        this.ctx.rect(e.posX + e.width-15, e.posY, 10, 10);
+        this.ctx.rect(e.posX + e.width-15, e.posY + e.height-15, 10, 10);
         this.ctx.stroke();
       }.bind(this)
     );
@@ -141,7 +150,7 @@ class Game {
       );
       this.parkingPlace = new parkingPlace(
         this.ctx,
-        parkingPlaceIdx * this.player.width,
+        this.spaceBetweenObstacles + parkingPlaceIdx * (this.player.width+this.spaceBetweenObstacles),
         this.parkingRowPositions[0],
         this.player.width,
         this.player.height
@@ -157,7 +166,7 @@ class Game {
       );
       this.parkingPlace = new parkingPlace(
         this.ctx,
-        parkingPlaceIdx * this.player.width,
+        this.spaceBetweenObstacles+parkingPlaceIdx * (this.player.width+this.spaceBetweenObstacles),
         this.parkingRowPositions[1],
         this.player.width,
         this.player.height
@@ -170,11 +179,31 @@ class Game {
   }
 
   gameOver() {
-    this.isCollision();
+    if(this.isCollision()) {
+      console.error("Game Over"); }
+  }
 
-    if (this.numberOfCollisions == 3) {
-      console.error("Game Over");
-      return true;
-    }
+  win() {
+    return (
+      //why is <for keys in object> not working
+      (this.player.carPoints.A[0] > this.parkingPlace.posX-10 &&
+        this.player.carPoints.A[0] < this.parkingPlace.posX  + this.parkingPlace.width+20 &&
+        this.player.carPoints.A[1] > this.parkingPlace.posY +10 &&
+        this.player.carPoints.A[1] < this.parkingPlace.posY + this.parkingPlace.height+20) &&
+      (this.player.carPoints.B[0] > this.parkingPlace.posX -10 &&
+        this.player.carPoints.B[0] < this.parkingPlace.posX  + this.parkingPlace.width+20 &&
+        this.player.carPoints.B[1] > this.parkingPlace.posY +10 &&
+        this.player.carPoints.B[1] < this.parkingPlace.posY + this.parkingPlace.height+20) &&
+      (this.player.carPoints.C[0] > this.parkingPlace.posX -10 &&
+        this.player.carPoints.C[0] < this.parkingPlace.posX  + this.parkingPlace.width+20 &&
+        this.player.carPoints.C[1] > this.parkingPlace.posY +10 &&
+        this.player.carPoints.C[1] < this.parkingPlace.posY + this.parkingPlace.height+20) &&
+      (this.player.carPoints.D[0] > this.parkingPlace.posX -10 &&
+        this.player.carPoints.D[0] < this.parkingPlace.posX  + this.parkingPlace.width+20 &&
+        this.player.carPoints.D[1] > this.parkingPlace.posY +10 &&
+        this.player.carPoints.D[1] < this.parkingPlace.posY + this.parkingPlace.height+20)
+    );
+
+
   }
 }
