@@ -1,4 +1,4 @@
-class Obstacle extends Car {
+class CarObstacle extends Car {
   constructor(ctx, startPosX, startPosY,rotate =0, width = 100, height = 150) {
     super(ctx, startPosX, startPosY, width, height);
     this.rotate = rotate;
