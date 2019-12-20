@@ -16,7 +16,8 @@ lorem
 
 ## License
 
-Please refer to `LICENSE.md`.
+Please refer to `LICENSE.md`. 
+Cars and pedestrian graphics from 1001.com.
 
 ## Contributing
 
