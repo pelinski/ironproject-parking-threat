@@ -13,6 +13,12 @@ The main goal of this game is to provide you the spacial skills you need to beco
 
 Move your car with the arrow keys. Be careful with pedestrians and other cars. If you hit either of them, **game over**. If you get to park your car without crashing it, congrats! you **win**.
 
+## To do
+This game could be even better! Some ideas for further work:
++Fix te pedestrians: once the first pedestrian walks out the canvas, no second pedestrian comes :-(
++Count collisions: the player looses after n collisions.
++Play again button: just calls game.init() again. 
+
 ## License
 
 Please refer to `LICENSE.md`. 
