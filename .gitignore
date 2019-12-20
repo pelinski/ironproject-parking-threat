@@ -1,3 +1,9 @@
 .vscode
 images/test/
+images/idiot.jpg
+images/parking-pack/*.txt
+images/parking-pack/*.png
+images/parking-pack/Spritesheets/
+images/parking-pack/Vector/
+images/parking-pack/PNG/unused/
 *.psd
