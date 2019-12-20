@@ -15,7 +15,8 @@ Move your car with the arrow keys. Be careful with pedestrians and other cars. I
 
 ## License
 
-Please refer to `LICENSE.md`.
+Please refer to `LICENSE.md`. 
+Cars and pedestrian graphics from 1001.com.
 
 ## Contributing
 
