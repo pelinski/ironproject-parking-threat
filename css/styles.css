@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css?family=Sonsie+One&display=swap');
+
+body {
+  background-image: url("../images/background/bg.PNG");
+  background-size:cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+ 
+}
+
+h1 {
+  font-family:'Sonsie One', cursive;
+}
+
+canvas {
+  background-color: lightgray;
+}
