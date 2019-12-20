@@ -62,12 +62,12 @@ class Player extends Car {
     this.ctx.restore();
 
     //control points
-    this.ctx.beginPath();
+    /*this.ctx.beginPath();
     this.ctx.rect(this.carCenter[0], this.carCenter[1], 5, 5);
     for (const point in this.carPoints) {
       this.ctx.rect(this.carPoints[point][0], this.carPoints[point][1], 5, 5);
     }
-    this.ctx.stroke();
+    this.ctx.stroke();*/
   }
 
   update(delta) {

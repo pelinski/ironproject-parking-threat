@@ -73,7 +73,7 @@ class Game {
     this.player.draw();
     this.carObstacles.forEach(e => e.draw());
     this.walkingObstacles.forEach(e => e.draw());
-    this.drawControlPoints();
+    //this.drawControlPoints();
     this.ctx.restore();
   }
 
