@@ -15,7 +15,7 @@ Move your car with the arrow keys. Be careful with pedestrians and other cars. I
 
 ## To do
 This game could be even better! Some ideas for further work:
-+ Fix te pedestrians: once the first pedestrian walks out the canvas, no second pedestrian comes :-(
++ Fix the pedestrians obstacle: once the first pedestrian walks out the canvas, no second pedestrian comes :-(
 + Count collisions: the player looses after n collisions.
 + Play again button: just calls game.init() again. 
 
